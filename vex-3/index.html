@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<style id="af-fullscreen">
+html,body{margin:0!important;padding:0!important;width:100vw!important;height:100vh!important;overflow:hidden!important}
+canvas{display:block!important;width:100vw!important;height:100vh!important;max-width:100vw!important;max-height:100vh!important}
+#unity-container,.unity-desktop,#c2canvasdiv,#gameContainer,#game-container{width:100vw!important;height:100vh!important;max-width:100vw!important;max-height:100vh!important}
+</style>
+    
+    
+    
+    <base href="https://cdn.jsdelivr.net/gh/bubblfan/vex@1340a1189f16869133a4a42f11554b5d0ccc064b/3/">
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
+    <title>Vex 3</title>
+    <link rel="stylesheet" href="assets/css/app.css" type="text/css" />
+</head>
+
+<body>
+    <div id="dummy" style="position:fixed;right:0;bottom:0"></div>
+    <div id="orientation"></div>
+    <div id="content"></div>
+    <script type="text/javascript">
+        var gameName = 'vex-3.min.js';
+
+        function addScript(src, buster, callback) {
+            var s = document.createElement('script');
+            s.setAttribute('src', src + '?v=' + buster);
+            if (typeof callback === 'function') {
+                s.onload = callback;
+            }
+            document.body.appendChild(s);
+        }
+        addScript('version.js', Date.now(), function() {
+            addScript(gameName, version, function() {
+                var game = new Vex3.Game.getInstance();
+                game.start();
+            })
+        })
+    </script>
+</body>
+
+</html>
