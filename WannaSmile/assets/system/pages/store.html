@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Store — WannaSmile4Evr</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #111318;
+    color: #f2f2f2;
+    font-family: monospace;
+    padding: 32px 24px 80px;
+  }
+  a { color: inherit; }
+
+  .store-header {
+    max-width: 1100px;
+    margin: 0 auto 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .store-header h1 {
+    margin: 0;
+    font-size: 22px;
+  }
+  .store-header p {
+    margin: 6px 0 0;
+    color: #9a9a9a;
+    font-size: 13px;
+  }
+  .back-link {
+    text-decoration: none;
+    background: #1c1f27;
+    border: 1px solid #2a2e38;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+  .back-link:hover { background: #262b36; }
+
+  .store-section {
+    max-width: 1100px;
+    margin: 0 auto 40px;
+  }
+  .store-section h2 {
+    font-size: 15px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #c9c9c9;
+    border-bottom: 1px solid #2a2e38;
+    padding-bottom: 8px;
+    margin-bottom: 18px;
+  }
+
+  .widget-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+  }
+
+  .widget-card {
+    background: #1a1d24;
+    border: 1px solid #2a2e38;
+    border-radius: 12px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .widget-card:hover { border-color: #3a3f4c; transform: translateY(-2px); }
+
+  .widget-card-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .widget-icon-wrap {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 8px var(--wcard-shadow1, rgba(255,90,0,0.5)), 0 0 16px var(--wcard-shadow2, rgba(255,90,0,0.25));
+    background: var(--wcard-bg, #ff5a00);
+  }
+  .widget-icon-wrap img {
+    width: 26px;
+    height: 26px;
+    object-fit: contain;
+  }
+  .widget-name {
+    font-size: 15px;
+    font-weight: bold;
+    margin: 0;
+  }
+  .widget-desc {
+    font-size: 12px;
+    color: #a8a8a8;
+    line-height: 1.5;
+    margin: 0;
+    flex: 1;
+  }
+
+  .select-btn {
+    border: none;
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-family: monospace;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    background: #262b36;
+    color: #eee;
+    transition: background 0.2s, color 0.2s;
+  }
+  .select-btn:hover { background: #323848; }
+  .select-btn.selected {
+    background: #2f7d46;
+    color: #fff;
+  }
+  .select-btn.selected:hover { background: #276b3b; }
+
+  .empty-state, .error-state {
+    color: #8a8a8a;
+    font-size: 13px;
+    padding: 20px 0;
+  }
+  .error-state { color: #ff8a8a; }
+
+  .coming-soon {
+    color: #7a7a7a;
+    font-size: 13px;
+    border: 1px dashed #2a2e38;
+    border-radius: 10px;
+    padding: 16px;
+  }
+
+  .hint {
+    max-width: 1100px;
+    margin: 0 auto 24px;
+    font-size: 12px;
+    color: #8a8a8a;
+    background: #1a1d24;
+    border: 1px solid #2a2e38;
+    border-radius: 8px;
+    padding: 10px 14px;
+  }
+</style>
+</head>
+<body>
+
+  <div class="store-header">
+    <div>
+      <h1>Store</h1>
+      <p>Pick the widgets you want available — everything here is free.</p>
+    </div>
+    <a class="back-link" href="../../../index.html">&larr; Back to site</a>
+  </div>
+
+  <div class="hint">
+    Selected widgets show up as floating bubbles on the main site. Once you have more than
+    one, use <b>+</b> / <b>-</b> on your keyboard to cycle between them — the one you switch
+    away from minimizes instead of closing, and comes right back when you cycle to it again.
+  </div>
+
+  <div class="store-section">
+    <h2>Widgets</h2>
+    <div id="widgetGrid" class="widget-grid">
+      <div class="empty-state">Loading widgets…</div>
+    </div>
+  </div>
+
+  <div class="hint">
+    Pick up to 9 themes as shortcuts — press <b>1</b>-<b>9</b> on the main site to jump
+    straight to one (<b>0</b> / <b>R</b> always returns to Redux). <b>Activate</b> makes a
+    theme the one that loads next time, on this device.
+  </div>
+
+  <div class="store-section">
+    <h2>Themes</h2>
+    <div id="themeGrid" class="widget-grid">
+      <div class="empty-state">Loading themes…</div>
+    </div>
+  </div>
+
+  <div class="hint">
+    Gif packs (the loading/searching/crash animations) are independent of themes —
+    mix and match freely. Pick as many as you like to make them swappable; press
+    <b>[</b> / <b>]</b> on the main site to cycle between them. <b>Activate</b> makes one
+    the one in use right now.
+  </div>
+
+  <div class="store-section">
+    <h2>Gif Packs</h2>
+    <div id="gifpackGrid" class="widget-grid">
+      <div class="empty-state">Loading gif packs…</div>
+    </div>
+  </div>
+
+<script>
+"use strict";
+
+const SHEETS_URL    = "https://script.google.com/macros/s/AKfycbyZxKfF569T-iExBHEpAbMEc1jyoR_8Yf3g0CWUqOF75zgQKdeMtYtxgf0F-D4Bxr-7/exec?type=widgets";
+const SELECTION_KEY = "ws_selected_widgets";
+
+function bustCache(url) {
+  return `${url}${url.includes("?") ? "&" : "?"}_=${Date.now()}`;
+}
+
+function getSelection() {
+  try {
+    const v = JSON.parse(localStorage.getItem(SELECTION_KEY) || "[]");
+    return Array.isArray(v) ? v : [];
+  } catch { return []; }
+}
+
+function setSelection(arr) {
+  try { localStorage.setItem(SELECTION_KEY, JSON.stringify(arr)); } catch {  }
+}
+
+function toggleSelected(id) {
+  const sel = getSelection();
+  const idx = sel.indexOf(id);
+  if (idx === -1) sel.push(id);
+  else sel.splice(idx, 1);
+  setSelection(sel);
+  return sel.includes(id);
+}
+
+function shadow2From(sh) {
+  const m = sh.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*[\d.]+)?\)$/i);
+  return m ? `rgba(${m[1]},${m[2]},${m[3]},0.25)` : sh;
+}
+
+function renderWidgets(widgets) {
+  const grid = document.getElementById("widgetGrid");
+  grid.innerHTML = "";
+
+  if (!widgets.length) {
+    grid.innerHTML = '<div class="empty-state">No widgets available right now.</div>';
+    return;
+  }
+
+  const selection = getSelection();
+
+  widgets.forEach(w => {
+    const bg = w["background-color"] || "#ff5a00";
+    const sh = w["shadow-color"]     || "rgba(255,90,0,0.65)";
+
+    const card = document.createElement("div");
+    card.className = "widget-card";
+
+    const top = document.createElement("div");
+    top.className = "widget-card-top";
+
+    const iconWrap = document.createElement("div");
+    iconWrap.className = "widget-icon-wrap";
+    iconWrap.style.setProperty("--wcard-bg", bg);
+    iconWrap.style.setProperty("--wcard-shadow1", sh);
+    iconWrap.style.setProperty("--wcard-shadow2", shadow2From(sh));
+    const icon = document.createElement("img");
+    icon.src = w["widget-icon"] || "";
+    icon.alt = w["widget-name"] || w.id || "";
+    iconWrap.appendChild(icon);
+
+    const name = document.createElement("p");
+    name.className = "widget-name";
+    name.textContent = w["widget-name"] || w.id || "Untitled widget";
+
+    top.append(iconWrap, name);
+
+    const desc = document.createElement("p");
+    desc.className = "widget-desc";
+    desc.textContent = w.description || "";
+
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "select-btn";
+    const isSelected = selection.includes(w.id);
+    btn.textContent = isSelected ? "Selected ✓" : "Select";
+    btn.classList.toggle("selected", isSelected);
+    btn.addEventListener("click", () => {
+      const nowSelected = toggleSelected(w.id);
+      btn.textContent = nowSelected ? "Selected ✓" : "Select";
+      btn.classList.toggle("selected", nowSelected);
+    });
+
+    card.append(top, desc, btn);
+    grid.appendChild(card);
+  });
+}
+
+async function init() {
+  const grid = document.getElementById("widgetGrid");
+  try {
+    const res = await fetch(bustCache(SHEETS_URL), { cache: "no-store" });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const widgets = await res.json();
+    if (!Array.isArray(widgets)) throw new Error("Widget feed did not return an array.");
+    renderWidgets(widgets);
+  } catch (err) {
+    console.error("[Store] Failed to load widgets:", err);
+    grid.innerHTML = '<div class="error-state">Couldn\'t load widgets right now — try refreshing.</div>';
+  }
+}
+
+// ---- Themes: same shape as Widgets above, but rows come back as plain
+// arrays (not objects) from ?type=themes, and selection is capped at 9
+// since keyboard shortcuts only go up to key "9". ----
+
+const THEMES_URL          = "https://script.google.com/macros/s/AKfycbyZxKfF569T-iExBHEpAbMEc1jyoR_8Yf3g0CWUqOF75zgQKdeMtYtxgf0F-D4Bxr-7/exec?type=themes";
+const THEME_SELECTION_KEY = "ws_selected_themes"; // up to 9 ids, pick order — consumed by ui.js's keyboard shortcuts
+const THEME_ACTIVE_KEY    = "selectedTheme";      // same key themify.js already reads on load
+const THEME_CACHE_KEY     = "ws_theme_cache";     // { [id]: rawRowArray } — same shape themify.js caches
+const THEME_MAX_SHORTCUTS = 9;
+
+const COL_NAME = 0, COL_ID = 1, COL_STATUS = 2, COL_ACCENT = 11;
+
+function getThemeSelection() {
+  try {
+    const v = JSON.parse(localStorage.getItem(THEME_SELECTION_KEY) || "[]");
+    return Array.isArray(v) ? v : [];
+  } catch { return []; }
+}
+
+function setThemeSelection(arr) {
+  try { localStorage.setItem(THEME_SELECTION_KEY, JSON.stringify(arr)); } catch {  }
+}
+
+function toggleThemeSelected(id) {
+  const sel = getThemeSelection();
+  const idx = sel.indexOf(id);
+  if (idx !== -1) {
+    sel.splice(idx, 1);
+    setThemeSelection(sel);
+    return { selected: false, full: false };
+  }
+  if (sel.length >= THEME_MAX_SHORTCUTS) return { selected: false, full: true };
+  sel.push(id);
+  setThemeSelection(sel);
+  return { selected: true, full: false };
+}
+
+function cacheThemeRow(id, row) {
+  let cache;
+  try { cache = JSON.parse(localStorage.getItem(THEME_CACHE_KEY) || "{}"); } catch { cache = {}; }
+  if (!cache || typeof cache !== "object" || Array.isArray(cache)) cache = {};
+  cache[id] = row;
+  try { localStorage.setItem(THEME_CACHE_KEY, JSON.stringify(cache)); } catch {  }
+}
+
+function activateTheme(id, row) {
+  try { localStorage.setItem(THEME_ACTIVE_KEY, id); } catch {  }
+  cacheThemeRow(id, row);
+}
+
+function renderThemes(rows) {
+  const grid = document.getElementById("themeGrid");
+  grid.innerHTML = "";
+
+  const eligible = rows.filter(row =>
+    (row[COL_ID] || "").toString().trim() &&
+    (row[COL_STATUS] || "").toString().trim().toLowerCase() !== "soon"
+  );
+
+  if (!eligible.length) {
+    grid.innerHTML = '<div class="empty-state">No themes available right now.</div>';
+    return;
+  }
+
+  const selection = getThemeSelection();
+  // Redux is always active by default (see themify.js's DEFAULT_THEME) even
+  // before the user ever touches this page — the store should never show a
+  // state with nothing marked active.
+  const activeId  = localStorage.getItem(THEME_ACTIVE_KEY) || "redux";
+
+  eligible.forEach(row => {
+    const id     = (row[COL_ID] || "").toString().trim().toLowerCase();
+    const name   = (row[COL_NAME] || id).toString();
+    const accent = (row[COL_ACCENT] || "").toString().trim() || "#ff5a00";
+
+    const card = document.createElement("div");
+    card.className = "widget-card";
+
+    const top = document.createElement("div");
+    top.className = "widget-card-top";
+
+    const swatch = document.createElement("div");
+    swatch.className = "widget-icon-wrap";
+    swatch.style.setProperty("--wcard-bg", accent);
+    swatch.style.setProperty("--wcard-shadow1", accent);
+    swatch.style.setProperty("--wcard-shadow2", shadow2From(accent));
+
+    const nameEl = document.createElement("p");
+    nameEl.className = "widget-name";
+    nameEl.textContent = name;
+
+    top.append(swatch, nameEl);
+
+    const btnRow = document.createElement("div");
+    btnRow.style.cssText = "display:flex;gap:8px;";
+
+    const selectBtn = document.createElement("button");
+    selectBtn.type = "button";
+    selectBtn.className = "select-btn";
+    const isSelected = selection.includes(id);
+    selectBtn.textContent = isSelected ? "Shortcut ✓" : "Add shortcut";
+    selectBtn.classList.toggle("selected", isSelected);
+    selectBtn.addEventListener("click", () => {
+      const result = toggleThemeSelected(id);
+      if (result.full) {
+        const prev = selectBtn.textContent;
+        selectBtn.textContent = "Max 9 selected";
+        setTimeout(() => { selectBtn.textContent = prev; }, 1200);
+        return;
+      }
+      selectBtn.textContent = result.selected ? "Shortcut ✓" : "Add shortcut";
+      selectBtn.classList.toggle("selected", result.selected);
+    });
+
+    const activateBtn = document.createElement("button");
+    activateBtn.type = "button";
+    activateBtn.className = "select-btn";
+    const isActive = activeId === id;
+    activateBtn.textContent = isActive ? "Active ✓" : "Activate";
+    activateBtn.classList.toggle("selected", isActive);
+    activateBtn.addEventListener("click", () => {
+      activateTheme(id, row);
+      grid.querySelectorAll("[data-activate-btn]").forEach(b => {
+        b.textContent = "Activate";
+        b.classList.remove("selected");
+      });
+      activateBtn.textContent = "Active ✓";
+      activateBtn.classList.add("selected");
+    });
+    activateBtn.dataset.activateBtn = "1";
+
+    btnRow.append(selectBtn, activateBtn);
+    card.append(top, btnRow);
+    grid.appendChild(card);
+  });
+}
+
+async function initThemes() {
+  const grid = document.getElementById("themeGrid");
+  try {
+    const res = await fetch(bustCache(THEMES_URL), { cache: "no-store" });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const rows = await res.json();
+    if (!Array.isArray(rows)) throw new Error("Theme feed did not return an array.");
+    renderThemes(rows);
+  } catch (err) {
+    console.error("[Store] Failed to load themes:", err);
+    grid.innerHTML = '<div class="error-state">Couldn\'t load themes right now — try refreshing.</div>';
+  }
+}
+
+// ---- Gif Packs: same GifPacksWS sheet themify.js reads on the main site —
+// fetched fresh every load (no-store + cache-busted, same as Themes/Widgets
+// above) so this page always reflects whatever's newest in the sheet, not a
+// stale local copy. Distinct from the sticker-pack system in quotes.js (that
+// decorates quote text, unrelated to these loader animations). No selection
+// cap: cycling with [ / ] isn't limited to physical keys the way theme
+// shortcuts are. ----
+
+const GIFPACKS_URL          = "https://script.google.com/macros/s/AKfycbyZxKfF569T-iExBHEpAbMEc1jyoR_8Yf3g0CWUqOF75zgQKdeMtYtxgf0F-D4Bxr-7/exec?type=gifpacks";
+const GIFPACK_SELECTION_KEY = "ws_selected_gifpacks"; // cycle order for [ / ] on the main site
+const GIFPACK_ACTIVE_KEY    = "ws_active_gifpack";
+
+function getGifPackSelection() {
+  try {
+    const v = JSON.parse(localStorage.getItem(GIFPACK_SELECTION_KEY) || "[]");
+    return Array.isArray(v) ? v : [];
+  } catch { return []; }
+}
+
+function toggleGifPackSelected(id) {
+  const sel = getGifPackSelection();
+  const idx = sel.indexOf(id);
+  if (idx === -1) sel.push(id); else sel.splice(idx, 1);
+  try { localStorage.setItem(GIFPACK_SELECTION_KEY, JSON.stringify(sel)); } catch {  }
+  return sel.includes(id);
+}
+
+function activateGifPack(id) {
+  try { localStorage.setItem(GIFPACK_ACTIVE_KEY, id); } catch {  }
+}
+
+function renderGifPacks(packs) {
+  const grid = document.getElementById("gifpackGrid");
+  grid.innerHTML = "";
+
+  if (!packs.length) {
+    grid.innerHTML = '<div class="empty-state">No gif packs available right now.</div>';
+    return;
+  }
+
+  const selection = getGifPackSelection();
+  // Redux is always active by default, same as themes — see themify.js's
+  // getActiveGifPack() fallback.
+  const activeId = localStorage.getItem(GIFPACK_ACTIVE_KEY) || "redux";
+
+  packs.forEach(pack => {
+    const card = document.createElement("div");
+    card.className = "widget-card";
+
+    const top = document.createElement("div");
+    top.className = "widget-card-top";
+
+    const nameEl = document.createElement("p");
+    nameEl.className = "widget-name";
+    nameEl.textContent = pack.name;
+    top.append(nameEl);
+
+    const btnRow = document.createElement("div");
+    btnRow.style.cssText = "display:flex;gap:8px;";
+
+    const selectBtn = document.createElement("button");
+    selectBtn.type = "button";
+    selectBtn.className = "select-btn";
+    const isSelected = selection.includes(pack.id);
+    selectBtn.textContent = isSelected ? "Cycling ✓" : "Add to cycle";
+    selectBtn.classList.toggle("selected", isSelected);
+    selectBtn.addEventListener("click", () => {
+      const nowSelected = toggleGifPackSelected(pack.id);
+      selectBtn.textContent = nowSelected ? "Cycling ✓" : "Add to cycle";
+      selectBtn.classList.toggle("selected", nowSelected);
+    });
+
+    const activateBtn = document.createElement("button");
+    activateBtn.type = "button";
+    activateBtn.className = "select-btn";
+    const isActive = activeId === pack.id;
+    activateBtn.textContent = isActive ? "Active ✓" : "Activate";
+    activateBtn.classList.toggle("selected", isActive);
+    activateBtn.addEventListener("click", () => {
+      activateGifPack(pack.id);
+      grid.querySelectorAll("[data-gifpack-activate]").forEach(b => {
+        b.textContent = "Activate";
+        b.classList.remove("selected");
+      });
+      activateBtn.textContent = "Active ✓";
+      activateBtn.classList.add("selected");
+    });
+    activateBtn.dataset.gifpackActivate = "1";
+
+    btnRow.append(selectBtn, activateBtn);
+    card.append(top, btnRow);
+    grid.appendChild(card);
+  });
+}
+
+async function initGifPacks() {
+  const grid = document.getElementById("gifpackGrid");
+  try {
+    const res = await fetch(bustCache(GIFPACKS_URL), { cache: "no-store" });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const rows = await res.json();
+    if (!Array.isArray(rows)) throw new Error("Gif pack feed did not return an array.");
+    const packs = rows
+      .map(r => ({ id: (r.id || "").trim().toLowerCase(), name: (r.name || r.id || "").trim() }))
+      .filter(p => p.id);
+    renderGifPacks(packs);
+  } catch (err) {
+    console.error("[Store] Failed to load gif packs:", err);
+    grid.innerHTML = '<div class="error-state">Couldn\'t load gif packs right now — try refreshing.</div>';
+  }
+}
+
+init();
+initThemes();
+initGifPacks();
+</script>
+</body>
+</html>
